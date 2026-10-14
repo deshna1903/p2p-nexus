@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ReactFlow, Background, Controls, MiniMap, addEdge, applyNodeChanges, applyEdgeChanges, MarkerType } from '@xyflow/react';
-import { Network, Files, Activity, FlaskConical, ChartNoAxesCombined, Moon, Sun, Plus, Trash2, RotateCcw, Play, Info, UploadCloud, ShieldCheck, Download, Split, HardDrive } from 'lucide-react';
+import { Network, Files, Activity, FlaskConical, ChartNoAxesCombined, ThermometerSun, Moon, Sun, Plus, Trash2, RotateCcw, Play, Info, UploadCloud, ShieldCheck, Download, Split, HardDrive } from 'lucide-react';
 import { splitFile, distributeChunks, reconstructFile, formatBytes, CHUNK_SIZES } from './fileEngine';
 import { makeSwarm, tickSwarm, toggleOffline } from './swarmEngine';
 import ExperimentLab from "./ExperimentLab";
 import ResultsAnalysis from "./ResultsAnalysis";
+import HeatwaveUseCase from './HeatwaveUseCase';
 const initialNodes = [
   {id:'A',position:{x:70,y:90},data:{label:'Peer A'},type:'default'},
   {id:'B',position:{x:380,y:60},data:{label:'Peer B'},type:'default'},
@@ -17,7 +18,8 @@ const sections = [
   {id:'files',name:'File Distribution',icon:Files},
   {id:'swarm',name:'Swarm Simulator',icon:Activity},
   {id:'experiments',name:'Experiment Lab',icon:FlaskConical},
-  {id:'results',name:'Results & Analysis',icon:ChartNoAxesCombined}
+  {id:'results',name:'Results & Analysis',icon:ChartNoAxesCombined},
+  {id:'heatwave',name:'Heatwave AI Use Case',icon:ThermometerSun}
 ];
 export default function App(){
   const [theme,setTheme] = useState('dark');
@@ -86,7 +88,7 @@ export default function App(){
   const current=sections.find(s=>s.id===page);
   return <div className={`shell ${theme}`}>
     <aside className="sidebar"><div className="brand"><div className="brand-mark"><Network size={24}/></div><div><strong>P2P NEXUS</strong><small>NETWORK SIMULATION LAB</small></div></div><div className="sidebar-caption">WORKSPACES</div>
-    <nav>{sections.map(s=><button key={s.id} className={`nav-item ${page===s.id?'active':''}`} onClick={()=>setPage(s.id)}><s.icon size={18}/><span>{s.name}</span>{!['network','files','swarm','experiments','results'].includes(s.id)&&<em>SOON</em>}</button>)}</nav>
+    <nav>{sections.map(s=><button key={s.id} className={`nav-item ${page===s.id?'active':''}`} onClick={()=>setPage(s.id)}><s.icon size={18}/><span>{s.name}</span>{!['network','files','swarm','experiments','results','heatwave'].includes(s.id)&&<em>SOON</em>}</button>)}</nav>
     <div className="sidebar-footer"><div className="phase">PHASE 3 / 5<br/><strong>Live Swarm Simulator</strong></div><button className="theme-toggle" onClick={()=>setTheme(t=>t==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={17}/>:<Moon size={17}/>} {theme==='dark'?'Light mode':'Dark mode'}</button></div></aside>
     <main className="main"><header className="topbar"><div><div className="overline">DATA COMMUNICATION & NETWORKING / INTERACTIVE LAB</div><h1>{current.name}</h1></div><div className="top-actions"><span className="live"><span className="dot"/> SIMULATION READY</span><button className="icon-btn" onClick={()=>setTheme(t=>t==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={18}/>:<Moon size={18}/>}</button></div></header>
     {page==='network'?<><div className="workspace-heading"><div><h2>Topology Workspace</h2><p>Drag peers to reposition them. Drag from one handle to another to connect peers.</p></div><div className="toolbar"><button onClick={addPeer}><Plus size={16}/> Add Peer</button><button onClick={deleteSelected} disabled={!selected}><Trash2 size={16}/> Remove Peer</button><button onClick={reset}><RotateCcw size={16}/> Reset</button></div></div>
@@ -142,7 +144,7 @@ export default function App(){
     experimentResults={experimentResults}
     onNavigate={setPage}
   />
-):<div className="coming"><div className="coming-icon"><current.icon size={30}/></div><h2>{current.name}</h2><p>This workspace is planned for a later implementation phase. We are building and testing the foundation first.</p><button onClick={()=>setPage('network')}>Back to Network Studio</button></div>}
+): page === 'heatwave' ? <HeatwaveUseCase /> :<div className="coming"><div className="coming-icon"><current.icon size={30}/></div><h2>{current.name}</h2><p>This workspace is planned for a later implementation phase. We are building and testing the foundation first.</p><button onClick={()=>setPage('network')}>Back to Network Studio</button></div>}
     <footer><Play size={13}/> Educational simulator — topology and peer connections are simulated locally in your browser.</footer></main>
   </div>;
 }

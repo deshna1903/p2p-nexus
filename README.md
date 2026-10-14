@@ -35,7 +35,7 @@ Centralized file sharing may suffer from server overload, bandwidth bottlenecks,
 6. Experiment with bandwidth, latency, loss, and failures.
 7. Compare the simulated P2P approach with a modeled client-server baseline.
 
-## 2. Main features — the five workspaces
+## 2. Main features — the six workspaces
 
 ### A. Network Studio
 
@@ -108,6 +108,25 @@ This workspace presents experiment outcomes in a clearer format.
 - Use the guided **Presentation Mode** to explain the project during a demonstration.
 
 **Tip:** Run an experiment first, then open Results & Analysis to see the comparison generated from that experiment.
+
+### F. Heatwave AI Use Case
+
+This independent academic workspace demonstrates **Climate Intelligence for Heatwave Monitoring, Prediction, and Early Warning** through the network distribution of a sample alert.
+
+- Select illustrative weather and risk data for Pune, Mumbai, Nagpur, Nashik, or Aurangabad and generate a warning snapshot with a unique ID and simulated creation time.
+- Select a source station and distribute the warning across a fixed, bidirectional P2P topology in breadth-first steps. Only online stations receive or forward, and each station receives the alert ID once.
+- Disconnect Mumbai to demonstrate the alternate route through Nashik. Disconnect Nagpur to isolate Aurangabad. Restore stations to resume a blocked run automatically.
+- Switch to Client-Server Mode and toggle the central server to compare direct server deliveries with peer forwarding. Server outages stop new server deliveries; peer outages can also block P2P.
+- Review delivery events, reached/waiting/unreachable stations, success percentage, simulated time, and the latest observation for each mode.
+- Reset clears simulation results and restores online stations and server while retaining the generated warning. Generating another warning clears prior delivery observations. Leaving the workspace cancels its timer and starts a fresh workspace on return.
+
+**Academic demonstration — illustrative weather and risk data, not live observations or AI predictions.** There is no weather API or AI model. The local source copy counts as reached at time zero when its station is online. Each P2P wave takes one simulated second; the preloaded central server sends to one available station per simulated second. Blocked time is excluded, and these teaching rules do not demonstrate real-world performance superiority.
+
+The new simulation is isolated in `src/heatwaveSimulation.js`; it does not change the file-processing, swarm, or existing experiment calculations. Its dependency-free regression tests run with:
+
+```powershell
+node --test tests/heatwaveSimulation.test.mjs
+```
 
 ## 3. How the project works — complete workflow
 
